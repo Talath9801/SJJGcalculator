@@ -252,10 +252,16 @@ void EvaluateExpression()
                 else//开始小数部分
                 {
                     countFrac++;//在录入数码的时候除以10的次数
+                    double myfrac=ch-'0';//当前输入的数码转化为数字
+                    for(int i=0;i<countFrac;i++)
+                    {
+                        myfrac=myfrac/10;
+                    }
+                    (OPND.top-1)->object.number=(OPND.top-1)->object.number+myfrac;
+                    ch=getchar();//去拿下一个字符
+                    preType=curType;
                 }
-//                (OPND.top-1)->object.number=(OPND.top-1)->object.number*10+ch-'0';
-//                ch=getchar();//去拿下一个字符
-//                preType=curType;
+
             }
             else if(preType==VARIABLE)//是变量中的数字
             {
@@ -269,6 +275,7 @@ void EvaluateExpression()
         else if(ch=='.')//小数点，仍在数字之内
         {
             ifFrac=1;//表示小数部分开始
+            ch=getchar();
         }
         else if(ifOperator(ch)==1)//是操作符
         {

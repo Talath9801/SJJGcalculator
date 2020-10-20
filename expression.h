@@ -7,6 +7,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<iostream>
+
 using namespace std;
 
 
@@ -130,7 +131,17 @@ int ifOperator(char e)//判断读入字符是否为运算符
     else
         return 0; //不是
 }
-
+int ifLetterLine(char e)//判断是否为字母或下划线
+{
+    if(e>='a'&&e<='z')
+        return 1;
+    else if(e>='A'&&e<='Z')
+        return 1;
+    else if(e=='_')
+        return 1;
+    else
+        return 0;
+}
 char optrCmp(char op1,char op2)//比较运算符的优先级
 {
     char result;
@@ -212,22 +223,57 @@ void EvaluateExpression()
     Push(&OPTR,mybase);//先给一个首尾标识符压栈底
     ch=getchar();//拿到一个字符
 
+    bool ifFrac=0;//标识符，是否进入小数部分，遇到小数点改为1，遇到变量首位或操作符改为0
+    int countFrac=0;//记录小数位数
 
     while(ch!='#'||GetTop(&OPTR).object.optr!='#')
     {
-        if(!ifOperator(ch))//如果不是操作符
+        if(ifNumber(ch))//如果是数字
         {
-            SElemType temp;
-            temp.type=NUMBER;
-            temp.object.number=ch-'0';//构造一个结点，用ASC码表计算出对应的十进制数值
-            curType=NUMBER;
+            if(preType==-1||preType==OPERATOR)//是数字的第一位数
+            {
+                SElemType temp;
+                temp.type=NUMBER;
+                temp.object.number=ch-'0';//构造一个结点，用ASC码表计算出对应的十进制数值
+                curType=NUMBER;
 
-            Push(&OPND,temp);//进入操作数的栈
-            ch=getchar();//去拿下一个字符
-            preType=curType;
-        }
-        else//是操作符
+                Push(&OPND,temp);//进入操作数的栈
+                ch=getchar();//去拿下一个字符
+                preType=curType;
+            }
+            else if(preType==NUMBER)//是多位数中，非第一位数字
+            {
+                if(ifFrac==0)//还在整数部分
+                {
+                    (OPND.top-1)->object.number=(OPND.top-1)->object.number*10+ch-'0';
+                    ch=getchar();//去拿下一个字符
+                    preType=curType;
+                }
+                else//开始小数部分
+                {
+                    countFrac++;//在录入数码的时候除以10的次数
+                }
+//                (OPND.top-1)->object.number=(OPND.top-1)->object.number*10+ch-'0';
+//                ch=getchar();//去拿下一个字符
+//                preType=curType;
+            }
+            else if(preType==VARIABLE)//是变量中的数字
+            {
+                //不入栈，但是改变下一个数码的算法
+                curType=NUMBER;
+
+                ch=getchar();
+                preType=curType;
+            }
+        }//如果是数字
+        else if(ch=='.')//小数点，仍在数字之内
         {
+            ifFrac=1;//表示小数部分开始
+        }
+        else if(ifOperator(ch)==1)//是操作符
+        {
+            ifFrac=0;
+            countFrac=0;
             SElemType temp;
             temp.type=OPERATOR;
             temp.object.optr=ch;//构造一个结点
@@ -251,6 +297,15 @@ void EvaluateExpression()
                     preType=curType;//更新pre
                     break;
             }
+        }
+        else if(ifLetterLine(ch)==1)//变量开头或内部
+        {
+            ifFrac=0;
+            countFrac=0;
+        }
+        else
+        {
+            ch=getchar();//处理换行符
         }
     }
     cout<<GetTop(&OPND).object.number;

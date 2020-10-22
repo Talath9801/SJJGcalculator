@@ -15,11 +15,42 @@ int main()
     int polmode;//选择顺序表/链表操作多项式
     cout<<"choose the object you want to calculate,"<<endl<<"0 for expression evaluation, "<<endl<<"1 for between vectors, "<<endl<<"2 for between polynomials, "<<endl<<"3 for polynomial derivation"<<endl;
     cin>>mode;
+
     if(mode==0)//表达式求值
     {
+        int exMode;//是否有变量
+        cout<<"if there is no variables, input 0, if there is a variable input 1"<<endl;
+        cin>>exMode;
         cout<<"input expression, end with #"<<endl;
-        cout<<"for example: 8*(4-2)+9/3# "<<endl;
-        EvaluateExpression();
+        if(exMode==0)
+        {
+            cout<<"for example: 8*(4-2)+9/3# "<<endl;
+            EvaluateExpression();//不含变量的求值
+        }
+        else if(exMode==1)//含变量的表达式
+        {
+            cout<<"for example: 8*(x12y3-2)+9/3#"<<endl;
+            char myExp[50];
+            char t;
+            int ii=0;
+            while(cin>>t)
+            {
+                myExp[ii]=t;
+                ii++;
+                if(t=='#')
+                    break;
+            }//将输入的表达式存到数组里面
+            cout<<"input the value of the variable"<<endl;
+            double value;
+            while(cin>>value)
+            {
+                //计算的时候将变量的值替换为value
+                //调用有变量的表达式求值函数
+                calcuVal(myExp,value);
+            }
+        }//含变量的表达式
+        else
+            cout<<"input error"<<endl;
     }
     else if(mode==1)//向量计算
     {

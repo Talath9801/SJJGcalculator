@@ -317,4 +317,153 @@ void EvaluateExpression()
     }
     cout<<GetTop(&OPND).object.number;
 }
+void calcuVal(char exp[],double value)
+{
+    int pos=0;//取字符
+    sqStack OPND,OPTR;
+    //char ch,a,b,theta,x;//ch时拿到的字符，ab是运算数，x是弹出的栈顶元素
+    int ch;//当前拿到的字符
+    SElemType a,b,theta;//进行计算的操作数和运算符
+    SElemType mytop;//弹出栈顶元素
+
+    InitStack(&OPND);//操作数和运算结果
+    InitStack(&OPTR);//运算符
+
+    int preType=-1;//记录上一个读入的字符的类型（数，变量，运算符）初始化为-1，什么也不是
+    int curType=-1;//记录当前读入的字符的类型
+
+    SElemType mybase;//给一个压栈底的#作为结束标识符
+    mybase.type=OPERATOR;
+    mybase.object.optr='#';
+    Push(&OPTR,mybase);//先给一个首尾标识符压栈底
+    ch=exp[pos];//拿到一个字符
+    pos++;
+
+    bool ifFrac=0;//标识符，是否进入小数部分，遇到小数点改为1，遇到变量首位或操作符改为0
+    int countFrac=0;//记录小数位数
+    bool isVariable=0;//是否是变量中的字符
+
+    while(ch!='#'||GetTop(&OPTR).object.optr!='#')
+    {
+        if(ifNumber(ch))//如果是数字
+        {
+            if(preType==-1||preType==OPERATOR)//是数字的第一位数
+            {
+                SElemType temp;
+                temp.type=NUMBER;
+                temp.object.number=ch-'0';//构造一个结点，用ASC码表计算出对应的十进制数值
+                curType=NUMBER;
+
+                Push(&OPND,temp);//进入操作数的栈
+                ch=exp[pos];//拿到一个字符
+                pos++;
+                preType=curType;
+            }
+            else if(preType==NUMBER&&isVariable==0)//是多位数中，非第一位数字
+            {
+                if(ifFrac==0)//还在整数部分
+                {
+                    (OPND.top-1)->object.number=(OPND.top-1)->object.number*10+ch-'0';
+                    ch=exp[pos];//拿到一个字符
+                    pos++;
+                    preType=curType;
+                }
+                else//开始小数部分
+                {
+                    countFrac++;//在录入数码的时候除以10的次数
+                    double myfrac=ch-'0';//当前输入的数码转化为数字
+                    for(int i=0;i<countFrac;i++)
+                    {
+                        myfrac=myfrac/10;
+                    }
+                    (OPND.top-1)->object.number=(OPND.top-1)->object.number+myfrac;
+                    ch=exp[pos];//拿到一个字符
+                    pos++;
+                    preType=curType;
+                }
+
+            }
+            else if(preType==VARIABLE||isVariable==1)//是变量中的数字
+            {
+                //不入栈，但是改变下一个数码的算法
+                //curType=NUMBER;
+
+                ch=exp[pos];//拿到一个字符
+                pos++;
+                //preType=curType;
+            }
+        }//如果是数字
+        else if(ch=='.')//小数点，仍在数字之内
+        {
+            ifFrac=1;//表示小数部分开始
+            ch=exp[pos];//拿到一个字符
+            pos++;
+        }
+        else if(ifOperator(ch)==1)//是操作符
+        {
+            ifFrac=0;
+            isVariable=0;//结束变量字符串
+            countFrac=0;
+            SElemType temp;
+            temp.type=OPERATOR;
+            temp.object.optr=ch;//构造一个结点
+            curType=OPERATOR;
+            switch(optrCmp(GetTop(&OPTR).object.optr,ch))//和栈顶的操作符比较
+            {
+                case '<':
+                    Push(&OPTR,temp);
+                    ch=exp[pos];//拿到一个字符
+                    pos++;
+                    preType=curType;//更新pre
+                    break;
+                case '>':
+                    Pop(&OPTR,&theta);
+                    Pop(&OPND,&b);
+                    Pop(&OPND,&a);
+                    Push(&OPND,Operate(a,theta,b));
+                    break;
+                case '=':
+                    Pop(&OPTR,&mytop);//弹出栈顶操作符
+                    ch=exp[pos];//拿到一个字符
+                    pos++;
+                    preType=curType;//更新pre
+                    break;
+            }
+        }
+        else if(ifLetterLine(ch)==1)//变量开头或内部
+        {
+            ifFrac=0;
+            countFrac=0;
+            isVariable=1;
+
+            curType=VARIABLE;
+
+            if(preType==-1||preType==OPERATOR)//是变量标识符的第一个字符
+            {
+                SElemType temp;
+                temp.type=NUMBER;
+                temp.object.number=value;//构造一个结点，数值用输入的变量值代替
+                curType=NUMBER;
+
+                Push(&OPND,temp);//进入操作数的栈
+                ch=exp[pos];//拿到一个字符
+                pos++;
+                preType=curType;
+            }
+            else  //是变量标识符的中间字符
+            {
+                ch=exp[pos];//拿到一个字符
+                pos++;
+            }
+
+            preType=curType;
+        }
+//        else
+//        {
+//            ch=exp[pos];
+//            pos++;//处理换行符
+//        }
+    }
+    cout<<GetTop(&OPND).object.number<<endl;
+}
 #endif // EXPRESSION_H

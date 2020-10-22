@@ -3,6 +3,8 @@
 #include <sqlist.h>//多项式计算，用顺序表
 #include <linklist.h>//多项式计算，用链表
 #include <expression.h>//表达式求值
+#include <iomanip>
+#include <stdlib.h>
 using namespace std;
 
 
@@ -19,17 +21,30 @@ int main()
     if(mode==0)//表达式求值
     {
         int exMode;//是否有变量
+        int decimal;//小数点后精确位数
+        double myresult;
         cout<<"if there is no variables, input 0, if there is a variable input 1"<<endl;
         cin>>exMode;
         cout<<"input expression, end with #"<<endl;
         if(exMode==0)
         {
-            cout<<"for example: 8*(4-2)+9/3# "<<endl;
-            EvaluateExpression();//不含变量的求值
+            cout<<"for example: 8*(4-2)+9/3# "<<endl<<endl<<endl;
+            EvaluateExpression(myresult);//不含变量的求值
+            cout<<"input the numbers after the decimal point"<<endl;
+            cin>>decimal;
+            if(decimal==0)
+            {
+                cout<<"the result is  "<<int(myresult)<<endl;
+            }
+            else
+            {
+                cout<<"the result is  "<<setiosflags(ios::fixed)<<setprecision(decimal)<<myresult<<endl;
+            }
+            //cout<<"the result is  "<<myresult<<endl;
         }
         else if(exMode==1)//含变量的表达式
         {
-            cout<<"for example: 8*(x12y3-2)+9/3#"<<endl;
+            cout<<"for example: 8*(x12y3-2)+9/3#"<<endl<<endl<<endl;
             char myExp[50];
             char t;
             int ii=0;
@@ -46,11 +61,26 @@ int main()
             {
                 //计算的时候将变量的值替换为value
                 //调用有变量的表达式求值函数
-                calcuVal(myExp,value);
+
+                calcuVal(myExp,value,myresult);
+                cout<<"input the numbers after the decimal point"<<endl;
+                cin>>decimal;
+                if(decimal==0)
+                {
+                    cout<<"the result is  "<<int(myresult)<<endl;
+                }
+                else
+                {
+                    cout<<"the result is  "<<setiosflags(ios::fixed)<<setprecision(decimal)<<myresult<<endl;
+                }
+                cout<<"------------------"<<endl<<endl;
+                cout<<"input the value of the variable"<<endl;
             }
         }//含变量的表达式
         else
             cout<<"input error"<<endl;
+
+
     }
     else if(mode==1)//向量计算
     {

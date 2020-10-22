@@ -203,7 +203,7 @@ SElemType Operate(SElemType a,SElemType theta,SElemType b)//运算
     return result;
 
 }
-void EvaluateExpression()
+void EvaluateExpression(double &_result)
 {
     sqStack OPND,OPTR;
     //char ch,a,b,theta,x;//ch时拿到的字符，ab是运算数，x是弹出的栈顶元素
@@ -315,9 +315,10 @@ void EvaluateExpression()
             ch=getchar();//处理换行符
         }
     }
-    cout<<GetTop(&OPND).object.number;
+    //cout<<GetTop(&OPND).object.number;
+    _result=GetTop(&OPND).object.number;
 }
-void calcuVal(char exp[],double value)
+void calcuVal(char exp[],double value,double &_result)
 {
     int pos=0;//取字符
     sqStack OPND,OPTR;
@@ -464,6 +465,7 @@ void calcuVal(char exp[],double value)
 //            pos++;//处理换行符
 //        }
     }
-    cout<<GetTop(&OPND).object.number<<endl;
+    //cout<<GetTop(&OPND).object.number<<endl;
+    _result=GetTop(&OPND).object.number;
 }
 #endif // EXPRESSION_H

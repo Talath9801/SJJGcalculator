@@ -7,6 +7,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<iostream>
+#include<math.h>
 
 using namespace std;
 
@@ -126,7 +127,7 @@ int ifNumber(char e)//判断输入的字符是否为数字
 }
 int ifOperator(char e)//判断读入字符是否为运算符
 {
-    if(e=='+'||e=='-'||e=='*'||e=='/'||e=='('||e==')'||e=='#')
+    if(e=='+'||e=='-'||e=='*'||e=='/'||e=='('||e==')'||e=='#'||e=='^')
         return 1;//是
     else
         return 0; //不是
@@ -149,34 +150,41 @@ char optrCmp(char op1,char op2)//比较运算符的优先级
     {
         if(op2=='+'||op2=='-'||op2==')'||op2=='#')
             result='>';
-        else if(op2=='*'||op2=='/'||op2=='(')
+        else if(op2=='*'||op2=='/'||op2=='('||op2=='^')
             result='<';
     }
     else if(op1=='*'||op1=='/')
     {
         if(op2=='+'||op2=='-'||op2=='*'||op2=='/'||op2==')'||op2=='#')
            result='>';
-        else if(op2=='(')
+        else if(op2=='('||op2=='^')
            result='<';
     }
     else if(op1=='(')
     {
-        if(op2=='+'||op2=='-'||op2=='*'||op2=='/'||op2=='(')
+        if(op2=='+'||op2=='-'||op2=='*'||op2=='/'||op2=='('||op2=='^')
            result='<';
         else if(op2==')')
            result='=';
     }
     else if(op1==')')
     {
-        if(op2=='+'||op2=='-'||op2=='*'||op2=='/'||op2==')'||op2=='#')
+        if(op2=='+'||op2=='-'||op2=='*'||op2=='/'||op2==')'||op2=='#'||op2=='^')
            result='>';
     }
     else if(op1=='#')
     {
-        if(op2=='+'||op2=='-'||op2=='*'||op2=='/'||op2=='(')
+        if(op2=='+'||op2=='-'||op2=='*'||op2=='/'||op2=='('||op2=='^')
            result='<';
         else if(op2=='#')
            result='=';
+    }
+    else if(op1=='^')
+    {
+        if(op2=='^'||op2=='(')
+            result='<';
+        else if(op2=='+'||op2=='-'||op2=='*'||op2=='/'||op2==')'||op2=='#')
+            result='>';
     }
     return result;
 }
@@ -199,6 +207,10 @@ SElemType Operate(SElemType a,SElemType theta,SElemType b)//运算
     else if(theta.object.optr=='/')
     {
         result.object.number=a.object.number/b.object.number;
+    }
+    else if(theta.object.optr=='^')
+    {
+        result.object.number=pow(a.object.number,b.object.number);
     }
     return result;
 
@@ -459,11 +471,7 @@ void calcuVal(char exp[],double value,double &_result)
 
             preType=curType;
         }
-//        else
-//        {
-//            ch=exp[pos];
-//            pos++;//处理换行符
-//        }
+
     }
     //cout<<GetTop(&OPND).object.number<<endl;
     _result=GetTop(&OPND).object.number;

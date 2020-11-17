@@ -10,4 +10,6 @@ HEADERS += \
     calculate.h \
     sqlist.h \
     linklist.h \
-    expression.h
+    expression.h \
+    deffunction.h \
+    matrix.h

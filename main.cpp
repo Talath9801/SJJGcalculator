@@ -5,6 +5,10 @@
 #include <expression.h>//表达式求值
 #include <iomanip>
 #include <stdlib.h>
+#include <deffunction.h>
+#include <matrix.h>
+
+
 using namespace std;
 
 
@@ -15,7 +19,15 @@ int main()
     int mode;//选择向量/多项式计算
     int _operate;//选择操作
     int polmode;//选择顺序表/链表操作多项式
-    cout<<"choose the object you want to calculate,"<<endl<<"0 for expression evaluation, "<<endl<<"1 for between vectors, "<<endl<<"2 for between polynomials, "<<endl<<"3 for polynomial derivation"<<endl;
+    cout<<"choose the object you want to calculate,"
+        <<endl<<"0 for expression evaluation, "
+        <<endl<<"1 for between vectors, "
+        <<endl<<"2 for between polynomials, "
+        <<endl<<"3 for polynomial derivation"
+        <<endl<<"4 for define function"
+        <<endl
+        <<endl<<"remark: do NOT include 'e' in variables !!!"
+        <<endl;
     cin>>mode;
 
     if(mode==0)//表达式求值
@@ -317,6 +329,23 @@ int main()
         printPol(L);
         cout<<"--------------------------------------"<<endl;
     }//多项式求导
+    else if (mode==4)//定义函数
+    {
+//        while(mode==4)
+//        {
+//            dofunction();
+//        }
+        myFun *funcList;
+        funcList=(myFun*)malloc(sizeof(myFun));//函数列表生成一个头结点
+        funcList->next=NULL;
+        for(int i=0;;i++)
+        {
+            dofunction(funcList);
+        }
+//       dofunction(funcList);
+//       dofunction(funcList);
+//        dofunction();
+    }
     else
     {
         cout<<"input error"<<endl;

@@ -9,12 +9,16 @@ typedef struct myFun
     char funExpre[50];//函数内容
     myFun *next;
 }myFun;
-//bool whenDef=0;//是否正在定义函数
-//bool whenRun=0;//是否正在运行函数
+
+myFun* checkHistory(char string[],int pos)
+//检查字符串从pos下标开始的字串是不是与历史函数名称中的某一个相同
+//如果是某个历史函数，返回这个历史函数的结点指针，如果不存在，返回空指针
+{
+
+}
+
 void dofunction(myFun *funcList)
 {
-//    whenDef=0;
-//    whenRun=0;
 
     char myInput[50];
     char t;
@@ -56,6 +60,8 @@ void dofunction(myFun *funcList)
             }
             if(ifContent==1&&myInput[temp]!='=')//等号后面的部分
             {
+                //比较当前字符与历史函数名称的首字母，如果不是历史函数首字母，计入“函数内容”
+
                 newnode->funExpre[exppp]=myInput[temp];
                 exppp++;
             }

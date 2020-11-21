@@ -20,14 +20,16 @@ int main()
     int _operate;//选择操作
     int polmode;//选择顺序表/链表操作多项式
     cout<<"choose the object you want to calculate,"
-        <<endl<<"0 for expression evaluation, "
-        <<endl<<"1 for between vectors, "
-        <<endl<<"2 for between polynomials, "
-        <<endl<<"3 for polynomial derivation"
-        <<endl<<"4 for define function"
-        <<endl
-        <<endl<<"remark: do NOT include 'e' in variables !!!"
-        <<endl;
+       <<endl<<"0 for expression evaluation, "        <<endl<<"1 for between vectors, "
+       <<endl<<"2 for between polynomials, "
+       <<endl<<"3 for polynomial derivation"
+       <<endl<<"4 for define function"
+       <<endl<<"5 for matrix"
+       <<endl
+       <<endl<<"remark: in '4 define function', do NOT include 'e' in variables !!!"
+       <<endl<<"do NOT use the same initial letter for function name and variable name !"
+       <<endl<<"for example, you can use f1, f2 for function name, and x1,x2,y for varible, but not f1 for function, f2 for variable"
+       <<endl;
     cin>>mode;
 
     if(mode==0)//表达式求值
@@ -345,6 +347,24 @@ int main()
 //       dofunction(funcList);
 //       dofunction(funcList);
 //        dofunction();
+    }
+    else if (mode==5)//矩阵运算
+    {
+        cout<<"input the calculation you want:"
+            <<endl<<"1 for addition "
+            <<endl<<"2 for subtraction"
+            <<endl<<"3 for multiplication"
+            <<endl<<"4 for turn";
+        int submode;
+
+        cin>>submode;
+        if(submode==1)
+        {
+            addmat();
+        }
+        else {
+            cout<<"input error"<<endl;
+        }
     }
     else
     {

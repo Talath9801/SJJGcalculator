@@ -6,7 +6,7 @@
 typedef struct myFun
 {
     char funName[10];//函数名称
-    char funExpre[50];//函数内容
+    char funExpre[80];//函数内容
     myFun *next;
 }myFun;
 
@@ -44,8 +44,8 @@ myFun* checkHistory(char sstring[],int pos,myFun* funclist)
             }
             else p=p->next;
         }
-        return p;//走到最后是空指针
     }
+    return p;//走到最后是空指针
 }
 
 void dofunction(myFun *funcList)
@@ -91,7 +91,7 @@ void dofunction(myFun *funcList)
             }
             if(ifContent==1&&myInput[temp]!='=')//等号后面的部分
             {
-                //比较当前字符与历史函数名称的首字母，如果不是历史函数首字母，计入“函数内容”
+                //比较当前字符与历史函数名称，如果不是历史函数名，计入“函数内容”
                 if(checkHistory(myInput,temp,funcList)==NULL)
                 {
                     newnode->funExpre[exppp]=myInput[temp];

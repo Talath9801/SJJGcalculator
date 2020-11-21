@@ -10,11 +10,42 @@ typedef struct myFun
     myFun *next;
 }myFun;
 
-myFun* checkHistory(char string[],int pos)
+myFun* checkHistory(char sstring[],int pos,myFun* funclist)
 //检查字符串从pos下标开始的字串是不是与历史函数名称中的某一个相同
 //如果是某个历史函数，返回这个历史函数的结点指针，如果不存在，返回空指针
 {
-
+    myFun* p;//游走指针，用来遍历funclist，从头结点的next往后遍历
+    p=funclist->next;
+    while(p)//p不为空
+    {
+        if(p->funName[1]=='\0')//单字符函数名
+        {
+            if(sstring[pos]==p->funName[0])
+            {
+                return p;
+            }
+            else p=p->next;
+        }
+        else if(p->funName[2]=='\0')//2字符函数名
+        {
+            if(sstring[pos]==p->funName[0]&&sstring[pos+1]==p->funName[1])
+            {
+                return p;
+            }
+            else p=p->next;
+        }
+        else//3字符函数名
+        {
+            if(sstring[pos]==p->funName[0]
+                    &&sstring[pos+1]==p->funName[1]
+                    &&sstring[pos+2]==p->funName[2])
+            {
+                return p;
+            }
+            else p=p->next;
+        }
+        return p;//走到最后是空指针
+    }
 }
 
 void dofunction(myFun *funcList)
@@ -61,9 +92,33 @@ void dofunction(myFun *funcList)
             if(ifContent==1&&myInput[temp]!='=')//等号后面的部分
             {
                 //比较当前字符与历史函数名称的首字母，如果不是历史函数首字母，计入“函数内容”
+                if(checkHistory(myInput,temp,funcList)==NULL)
+                {
+                    newnode->funExpre[exppp]=myInput[temp];
+                    exppp++;
+                }
+                else
+                {
+                    myFun *q;
+                    q=checkHistory(myInput,temp,funcList);//q是匹配函数的结点指针
+                    int qq=0;
+                    //qq是匹配的历史函数的内容部分下标
 
-                newnode->funExpre[exppp]=myInput[temp];
-                exppp++;
+                    newnode->funExpre[exppp]='(';
+                    exppp++;//嵌套调用要套括号
+                    while(q->funExpre[qq]!='#')
+                    {
+                        newnode->funExpre[exppp]=q->funExpre[qq];
+                        qq++;
+                        exppp++;
+                    }
+                    newnode->funExpre[exppp]=')';
+                    exppp++;//嵌套调用要套括号
+                    //下面要在输入的部分将temp“指针”移动到内嵌函数时候的位置
+                    while(myInput[temp]!=')')
+                        temp++;
+                    temp++;
+                }
             }
             if(myInput[temp]=='#')
             {

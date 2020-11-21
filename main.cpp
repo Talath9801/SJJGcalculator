@@ -27,8 +27,7 @@ int main()
        <<endl<<"5 for matrix"
        <<endl
        <<endl<<"remark: in '4 define function', do NOT include 'e' in variables !!!"
-       <<endl<<"do NOT use the same initial letter for function name and variable name !"
-       <<endl<<"for example, you can use f1, f2 for function name, and x1,x2,y for varible, but not f1 for function, f2 for variable"
+       <<endl<<"mind that function name no longer than 3 letters !"
        <<endl;
     cin>>mode;
 
@@ -362,7 +361,14 @@ int main()
         {
             addmat();
         }
-        else {
+        else if(submode==2)
+            submat();
+        else if(submode==3)
+        {
+
+        }
+        else
+        {
             cout<<"input error"<<endl;
         }
     }

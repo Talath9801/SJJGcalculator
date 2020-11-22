@@ -252,9 +252,11 @@ void EvaluateExpression(double &_result)
 
     bool ifFrac=0;//标识符，是否进入小数部分，遇到小数点改为1，遇到变量首位或操作符改为0
     int countFrac=0;//记录小数位数
+    bool lBracket=0;//是否刚刚拿到一个左括号（为了识别负数）
 
     while(ch!='#'||GetTop(&OPTR).object.optr!='#')
     {
+
         if(ifNumber(ch))//如果是数字
         {
             if(preType==-1||preType==OPERATOR)//是数字的第一位数
@@ -312,6 +314,37 @@ void EvaluateExpression(double &_result)
             temp.type=OPERATOR;
             temp.object.optr=ch;//构造一个结点
             curType=OPERATOR;
+            //对负数字面常量的处理
+            if(ch=='(')
+            {
+                lBracket=1;
+            }
+            else if(ch=='-')
+            {
+                if(lBracket==1)
+                {
+                    //'-'之前拿到一个左括号，在数据栈中push一个0进去
+                    SElemType zeroNode;
+                    zeroNode.type=NUMBER;
+                    zeroNode.object.number=0;
+                    curType=NUMBER;//构造一个新的0结点
+
+                    Push(&OPND,temp);//进入操作数的栈
+
+                    preType=curType;
+
+                    lBracket=0;
+                }
+                else//刚刚拿到的不是左括号
+                {
+                    //什么也不做
+                }
+            }
+            else
+            {
+                lBracket=0;
+            }
+            //对负数字面常量的处理完毕
             switch(optrCmp(GetTop(&OPTR).object.optr,ch))//和栈顶的操作符比较
             {
                 case '<':

@@ -6,7 +6,7 @@
 typedef struct myFun
 {
     char funName[10];//函数名称
-    char funExpre[80];//函数内容
+    char funExpre[100];//函数内容
     myFun *next;
 }myFun;
 
@@ -117,7 +117,7 @@ void dofunction(myFun *funcList)
                     //下面要在输入的部分将temp“指针”移动到内嵌函数时候的位置
                     while(myInput[temp]!=')')
                         temp++;
-                    temp++;
+                    //temp++;
                 }
             }
             if(myInput[temp]=='#')
@@ -188,17 +188,24 @@ void dofunction(myFun *funcList)
         temp=0;
         while(myInput[temp]!='(')temp++;
         temp++;//找到变量的值的第一位数字的位置
-
         double value;//赋给变量的值
-
         bool ifF=0;//进入小数
         int countF=0;//小数数位
-
         bool ifE=0;//进入科学计数法的指数部分
+        bool ifMinus=0;//是否是负数，默认为否
 
-        value=myInput[temp]-'0';
+        if(myInput[temp]!='-')//不是负数
+        {
+            value=myInput[temp]-'0';
+        }
+        else//是负数
+        {
+            temp++;//越过第一个字符‘-’
+            ifMinus=1;
+            value=myInput[temp]-'0';
+        }
 
-        int afterE=0;
+        int afterE=0;//科学计数法指数部分
         for(int i=0;;i++)
         {
             if(myInput[temp]!=')')temp++;
@@ -239,6 +246,11 @@ void dofunction(myFun *funcList)
             }
         }//处理小数
 
+        //现在计算得到的value其实是绝对值
+        if(ifMinus==1)
+        {
+            value=-value;//如果是负数，取相反数
+        }
         double myresult;
         calcuVal(pp->funExpre,value,myresult);
         cout<<"="<<myresult<<endl;

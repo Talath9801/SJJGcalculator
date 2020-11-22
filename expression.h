@@ -233,7 +233,6 @@ SElemType Operate(SElemType a,SElemType theta,SElemType b)//运算
 void EvaluateExpression(double &_result)
 {
     sqStack OPND,OPTR;
-    //char ch,a,b,theta,x;//ch时拿到的字符，ab是运算数，x是弹出的栈顶元素
     int ch;//当前拿到的字符
     SElemType a,b,theta;//进行计算的操作数和运算符
     SElemType mytop;//弹出栈顶元素
@@ -252,11 +251,13 @@ void EvaluateExpression(double &_result)
 
     bool ifFrac=0;//标识符，是否进入小数部分，遇到小数点改为1，遇到变量首位或操作符改为0
     int countFrac=0;//记录小数位数
+    bool ifBracket=0;//时候刚刚拿到一个左括号
 
     while(ch!='#'||GetTop(&OPTR).object.optr!='#')
     {
         if(ifNumber(ch))//如果是数字
         {
+            ifBracket=0;
             if(preType==-1||preType==OPERATOR)//是数字的第一位数
             {
                 SElemType temp;
@@ -301,11 +302,41 @@ void EvaluateExpression(double &_result)
         }//如果是数字
         else if(ch=='.')//小数点，仍在数字之内
         {
+            ifBracket=0;
             ifFrac=1;//表示小数部分开始
             ch=getchar();
         }
         else if(ifOperator(ch)==1)//是操作符
         {
+            //如果是左括号之后紧接着一个负号，要特殊处理
+            if(ch=='(')
+            {
+                ifBracket=1;
+            }
+            else if(ch=='-')
+            {
+                if(ifBracket==1)
+                {
+                    SElemType temp;
+                    temp.type=NUMBER;
+                    temp.object.number=0;//构造一个结点，0
+                    curType=NUMBER;
+
+                    Push(&OPND,temp);//进入操作数的栈
+                    //ch=getchar();//去拿下一个字符
+                    preType=curType;
+
+                    ifBracket=0;
+                }
+                else
+                {
+                    ifBracket=0;
+                }
+            }
+            else
+            {
+                ifBracket=0;
+            }
             ifFrac=0;
             countFrac=0;
             SElemType temp;
@@ -334,11 +365,13 @@ void EvaluateExpression(double &_result)
         }
         else if(ifLetterLine(ch)==1)//变量开头或内部
         {
+            ifBracket=0;
             ifFrac=0;
             countFrac=0;
         }
         else
         {
+            ifBracket=0;
             ch=getchar();//处理换行符
         }
     }
